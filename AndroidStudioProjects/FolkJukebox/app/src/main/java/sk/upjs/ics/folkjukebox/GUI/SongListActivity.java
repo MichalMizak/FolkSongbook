@@ -55,8 +55,8 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
             public void onItemClick(int position, View v, Cursor cursor) {
                 Log.d("SongListActivity", "onItemClick position: " + position);
 
-                Intent intent = new Intent(v.getContext(), SongDetailActivity.class);
-
+                // Intent intent = new Intent(v.getContext(), SongDetailActivity.class);
+                Intent intent = new Intent(v.getContext(), SongDetailBrowserActivity.class);
                 // very, very, very slow, but works
                 cursor.moveToPosition(position);
 
@@ -85,7 +85,7 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
                 Provider.Song.COLUMN_NAMES.styleId.name()};
 
         int[] to = {android.R.id.text1};
-// android.R.layout.simple_list_item_1, from, to
+
         adapter = new SimpleCursorRecyclerAdapter(this, Defaults.NO_CURSOR, 0);
 
         setOnItemClickListener(adapter);
@@ -98,7 +98,7 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
 
         CursorLoader loader = new CursorLoader(
                 this, Provider.SONG_CONTENT_URI, Defaults.ALL_COLUMNS, Defaults.NO_SELECTION,
-                Defaults.NO_SELECTION_ARGS, "lyrics ASC");
+                Defaults.NO_SELECTION_ARGS, "title ASC");
 
         return loader;
     }

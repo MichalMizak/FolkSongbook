@@ -29,15 +29,22 @@ public class SongContentProvider extends ContentProvider {
     public static final int STYLE = 2;
     public static final int ATTRIBUTE = 3;
     public static final int ATTRIBUTE_SONG = 4;
-// .logic.provider.SongContentProvider
-    public static final String AUTHORITY = "sk.upjs.ics.folkjukebox";
+
+    public static final int SONG_ITEM = 11;
+
+    public static final String AUTHORITY = Provider.AUTHORITY;
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+        uriMatcher.addURI(AUTHORITY, Provider.Song.TABLE_NAME + "/#", SONG_ITEM);
+
         uriMatcher.addURI(AUTHORITY, Provider.Song.TABLE_NAME, SONG);
         uriMatcher.addURI(AUTHORITY, Provider.Style.TABLE_NAME, STYLE);
         uriMatcher.addURI(AUTHORITY, Provider.Attribute.TABLE_NAME, ATTRIBUTE);
         uriMatcher.addURI(AUTHORITY, Provider.AttributeSong.TABLE_NAME, ATTRIBUTE_SONG);
+
+
     }
 
     public SongContentProvider() {
@@ -96,6 +103,11 @@ public class SongContentProvider extends ContentProvider {
                         projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
                 cursor.setNotificationUri(getContext().getContentResolver(), Provider.ATTRIBUTE_SONG_CONTENT_URI);
                 break;
+
+            case SONG_ITEM:
+                int id = Integer.parseInt(uri.getPathSegments().get(1));
+                cursor = findById(id);
+                break;
             default:
                 return Defaults.NO_CURSOR;
         }
@@ -104,9 +116,14 @@ public class SongContentProvider extends ContentProvider {
 
     private Cursor findById(long id) {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
-        String selection = Provider.Song._ID + "=" + id;
-        return db.query(Provider.Song.TABLE_NAME, ALL_COLUMNS, selection,
+        String selection = Provider.Song._ID + " = " + id;
+
+        final Cursor cursor = db.query(Provider.Song.TABLE_NAME, ALL_COLUMNS, selection,
                 NO_SELECTION_ARGS, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
+
+        cursor.setNotificationUri(getContext().getContentResolver(), Provider.SONG_CONTENT_URI);
+
+        return cursor;
     }
 
 

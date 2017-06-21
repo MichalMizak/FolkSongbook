@@ -67,6 +67,7 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCur
         public TextViewHolder(View view) {
             super(view);
 
+            view.setLongClickable(true);
             view.setOnClickListener(this);
 
             this.textView = (TextView) itemView.findViewById(android.R.id.text1);
@@ -75,7 +76,6 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCur
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v, cursor);
-
             Log.d("RecyclerView", "CLICK!");
         }
 
