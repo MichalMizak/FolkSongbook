@@ -4,4 +4,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_song_detail_browser">SongDetailBrowserActivity</string>
+    <string name="title_activity_song_search">SongSearchActivity</string>
+    <string name="search_hint">Vyhľadaj piesne</string>
+    <string name="app_label">Ľudový spevník</string>
+    <string name="no_songs_found">Nenašli sa piesne</string>
 </resources>

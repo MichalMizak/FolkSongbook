@@ -85,22 +85,22 @@ public class SongContentProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case SONG:
                 cursor = db.query(Provider.Song.TABLE_NAME,
-                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
+                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), Provider.SONG_CONTENT_URI);
                 break;
             case STYLE:
                 cursor = db.query(Provider.Style.TABLE_NAME,
-                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
+                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), Provider.STYLE_CONTENT_URI);
                 break;
             case ATTRIBUTE:
                 cursor = db.query(Provider.Attribute.TABLE_NAME,
-                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
+                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), Provider.ATTRIBUTE_CONTENT_URI);
                 break;
             case ATTRIBUTE_SONG:
                 cursor = db.query(Provider.AttributeSong.TABLE_NAME,
-                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
+                        projection, selection, selectionArgs, NO_GROUP_BY, NO_HAVING, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), Provider.ATTRIBUTE_SONG_CONTENT_URI);
                 break;
 

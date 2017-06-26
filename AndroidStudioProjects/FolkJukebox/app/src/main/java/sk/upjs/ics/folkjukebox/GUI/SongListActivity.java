@@ -48,6 +48,7 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
         new SongItemTouchHelper(songRecyclerView,
                 new SongItemTouchHelper.SongCallback(adapter));
     }
+
     // idea from Marurban https://stackoverflow.com/questions/24471109/recyclerview-onclick/26196831#26196831
     private void setOnItemClickListener(SimpleCursorRecyclerAdapter adapter) {
         adapter.setOnItemClickListener(new SimpleCursorRecyclerAdapter.ClickListener() {
@@ -113,7 +114,8 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
         adapter.swapCursor(Defaults.NO_CURSOR);
     }
 
-/*
+
+    /*
     private int getLastVisibleItemPosition() {
         return linearLayoutManager.findLastVisibleItemPosition();
     }

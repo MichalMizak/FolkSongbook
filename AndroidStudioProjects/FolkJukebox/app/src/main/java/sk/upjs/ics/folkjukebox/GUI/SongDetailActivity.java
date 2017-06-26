@@ -22,6 +22,7 @@ import sk.upjs.ics.folkjukebox.R;
 import sk.upjs.ics.folkjukebox.logic.provider.Provider;
 import sk.upjs.ics.folkjukebox.utilities.Defaults;
 
+@Deprecated
 public class SongDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private int id;

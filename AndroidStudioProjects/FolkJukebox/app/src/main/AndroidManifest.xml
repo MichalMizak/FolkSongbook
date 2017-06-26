@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:name=".GUI.SongDetailActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <provider
             android:name=".logic.provider.SongContentProvider"
@@ -33,7 +33,25 @@
         <activity
             android:name=".GUI.SongDetailBrowserActivity"
             android:label="@string/title_activity_song_detail_browser"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".GUI.SongSearchActivity"
+            android:label="@string/title_activity_song_search"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <provider
+            android:name=".logic.provider.SongSearchRecentSuggestionsProvider"
+            android:authorities="sk.upjs.ics.folkjukebox.logic.provider.SongSearchRecentSuggestionsProvider"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

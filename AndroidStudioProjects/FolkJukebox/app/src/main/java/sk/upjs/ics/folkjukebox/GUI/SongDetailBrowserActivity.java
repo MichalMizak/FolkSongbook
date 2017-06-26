@@ -123,8 +123,18 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // not swapCursor because we want it closed
-        cursorFragmentStatePagerAdapter.changeCursor(Defaults.NO_CURSOR);
+        // TODO: review this comment out
+//        cursorFragmentStatePagerAdapter.changeCursor(Defaults.NO_CURSOR);
     }
+
+    // not sure about the efectiveness of this
+    /*@Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, SongListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish(); // call this to finish the current activity
+    }*/
 
     public void onFabClick(View view) {
         startActivity(new Intent(view.getContext(), SongListActivity.class));

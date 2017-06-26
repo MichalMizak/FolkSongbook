@@ -2,7 +2,6 @@ package sk.upjs.ics.folkjukebox.GUI.recycler.view;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,9 +30,8 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCur
     }
 
     @Override
-    public void bindViewHolder(TextViewHolder holder, Context context, Cursor cursor) {
+    public void bindViewHolder(TextViewHolder vh, Context context, Cursor cursor) {
         String title = cursor.getString(1);
-        TextViewHolder vh = holder;
         vh.setText(title);
         vh.setCursor(cursor);
     }
@@ -71,6 +69,7 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCur
             view.setOnClickListener(this);
 
             this.textView = (TextView) itemView.findViewById(android.R.id.text1);
+            textView.setLongClickable(true);
         }
 
         @Override
