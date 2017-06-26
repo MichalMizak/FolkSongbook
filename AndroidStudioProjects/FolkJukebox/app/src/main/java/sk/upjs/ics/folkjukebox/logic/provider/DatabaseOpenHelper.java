@@ -120,6 +120,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO song VALUES (NULL, 'sat', 'wat wat wat', 'watovce', 'pan wat', 0)");
         db.execSQL("INSERT INTO song VALUES (NULL, 'sat', 'wat wat wat', 'watovce', 'pan wat', 0)");
 
+        db.execSQL("INSERT INTO style VALUES (0, 'Čardáš')");
     }
 
 }

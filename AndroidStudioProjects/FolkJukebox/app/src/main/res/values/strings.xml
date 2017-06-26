@@ -8,4 +8,8 @@
     <string name="search_hint">Vyhľadaj piesne</string>
     <string name="app_label">Ľudový spevník</string>
     <string name="no_songs_found">Nenašli sa piesne</string>
+    <string name="title">Názov</string>
+    <string name="region">Región</string>
+    <string name="style">Štýl</string>
+    <string name="move_upward_behavior">sk.upjs.ics.folkjukebox.utilities.MoveUpwardBehavior</string>
 </resources>

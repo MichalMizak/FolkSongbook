@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -47,11 +48,12 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
         // final String[] regionNames = getResources().getStringArray(R.array.regionNames);
         // this.viewPager = (ViewPager) findViewById(R.id.songDetailViewPager);
 
+        if (savedInstanceState == null) {
+            id = getIntent().getIntExtra(Provider.Song._ID, 0);
+        } else {
+            id = savedInstanceState.getInt(Provider.Song._ID);
+        }
 
-        id = getIntent().getIntExtra(Provider.Song._ID, 0);
-        Log.d("SongDetailBrowser onCr", id + " = id");
-
-        // CAN BE A PROBLEM
         FragmentManager fm = getSupportFragmentManager();
 
         cursorFragmentStatePagerAdapter = new CursorFragmentStatePagerAdapter(fm) {
@@ -60,6 +62,10 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
                 String lyrics = "";
                 if (cursor != null) {
                     cursor.moveToPosition(position);
+
+                    int idColumnId = cursor.getColumnIndex(Provider.Song._ID);
+                    id = cursor.getInt(idColumnId);
+
                     final int lyricsColumnId = cursor.getColumnIndex(Provider.Song.COLUMN_NAMES.lyrics.name());
                     lyrics = cursor.getString(lyricsColumnId);
                 }
@@ -127,16 +133,16 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
 //        cursorFragmentStatePagerAdapter.changeCursor(Defaults.NO_CURSOR);
     }
 
-    // not sure about the efectiveness of this
-    /*@Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, SongListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish(); // call this to finish the current activity
-    }*/
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt(Provider.Song._ID, id);
+    }
 
     public void onFabClick(View view) {
-        startActivity(new Intent(view.getContext(), SongListActivity.class));
+        Intent intent = new Intent(view.getContext(), SongDetailActivity.class);
+
+        intent.putExtra(Provider.Song._ID, id.intValue());
+        startActivity(intent);
     }
 }

@@ -43,8 +43,6 @@ public class SongContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, Provider.Style.TABLE_NAME, STYLE);
         uriMatcher.addURI(AUTHORITY, Provider.Attribute.TABLE_NAME, ATTRIBUTE);
         uriMatcher.addURI(AUTHORITY, Provider.AttributeSong.TABLE_NAME, ATTRIBUTE_SONG);
-
-
     }
 
     public SongContentProvider() {
@@ -79,8 +77,8 @@ public class SongContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         Cursor cursor;
+
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
-        Log.d("SongContentProvider", "I got here");
 
         switch (uriMatcher.match(uri)) {
             case SONG:
@@ -106,20 +104,35 @@ public class SongContentProvider extends ContentProvider {
 
             case SONG_ITEM:
                 int id = Integer.parseInt(uri.getPathSegments().get(1));
-                cursor = findById(id);
+                cursor = findById(id, db);
                 break;
+
             default:
                 return Defaults.NO_CURSOR;
         }
         return cursor;
     }
 
-    private Cursor findById(long id) {
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+    private Cursor findById(long id, SQLiteDatabase db) {
         String selection = Provider.Song._ID + " = " + id;
 
-        final Cursor cursor = db.query(Provider.Song.TABLE_NAME, ALL_COLUMNS, selection,
-                NO_SELECTION_ARGS, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
+       /* final Cursor cursor = db.query(Provider.Song.TABLE_NAME, ALL_COLUMNS, selection,
+                NO_SELECTION_ARGS, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);*/
+
+        Log.d("findById", String.valueOf(id));
+        final String songStyleId = Provider.Song.TABLE_NAME + "." + Provider.Song.COLUMN_NAMES.styleId.name();
+
+        final String styleId = Provider.Style.TABLE_NAME + "." + Provider.Style._ID;
+
+        final String songId = Provider.Song.TABLE_NAME + "." + Provider.Song._ID;
+
+        final String sql = "SELECT * FROM " +
+                Provider.Song.TABLE_NAME + " INNER JOIN "
+                + Provider.Style.TABLE_NAME + " ON ("
+                + songStyleId + " = " + styleId + ")"
+                + " WHERE " + songId + "= ?";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{Long.toString(id)});
 
         cursor.setNotificationUri(getContext().getContentResolver(), Provider.SONG_CONTENT_URI);
 
@@ -134,10 +147,4 @@ public class SongContentProvider extends ContentProvider {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-
-    /*private Cursor listSongs() {
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(Provider.Song.TABLE_NAME, ALL_COLUMNS, NO_SELECTION, NO_SELECTION_ARGS, NO_GROUP_BY, NO_HAVING, NO_SORT_ORDER);
-        return cursor;
-    }*/
 }
