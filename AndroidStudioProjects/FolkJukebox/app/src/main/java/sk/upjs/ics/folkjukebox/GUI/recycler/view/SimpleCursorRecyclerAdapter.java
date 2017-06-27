@@ -10,11 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import sk.upjs.ics.folkjukebox.GUI.SongDetailActivity;
+import java.util.HashMap;
 
-public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCursorRecyclerAdapter.TextViewHolder> {
+import sk.upjs.ics.folkjukebox.GUI.SongDetailActivity;
+import sk.upjs.ics.folkjukebox.GUI.recycler.view.FastScroll.FastScrollRecyclerViewInterface;
+
+// tweaked by https://github.com/code-computerlove/FastScrollRecyclerView
+// and me
+public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCursorRecyclerAdapter.TextViewHolder> implements FastScrollRecyclerViewInterface{
 
     private static ClickListener clickListener;
+    private HashMap<String, Integer> mapIndex;
 
     /**
      * Recommended constructor.
@@ -27,6 +33,8 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCur
      */
     public SimpleCursorRecyclerAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+        mapIndex = new HashMap<>();
+
     }
 
     @Override
@@ -55,6 +63,15 @@ public class SimpleCursorRecyclerAdapter extends CursorRecyclerAdapter<SimpleCur
     public void remove(int adapterPosition) {
         // tu by sa vyhadzovalo aj z databazy
         notifyItemRemoved(adapterPosition);
+    }
+
+    @Override
+    public HashMap<String, Integer> getMapIndex() {
+        return mapIndex;
+    }
+
+    public void setMapIndex(HashMap<String, Integer> mapIndex) {
+        this.mapIndex = mapIndex;
     }
 
     public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {

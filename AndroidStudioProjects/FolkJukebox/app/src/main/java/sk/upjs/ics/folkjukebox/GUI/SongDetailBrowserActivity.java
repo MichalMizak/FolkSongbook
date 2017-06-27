@@ -31,10 +31,12 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
     private Integer id;
     private LinearLayoutManager linearLayoutManager;
 
-    CursorFragmentStatePagerAdapter cursorFragmentStatePagerAdapter;
+    private CursorFragmentStatePagerAdapter cursorFragmentStatePagerAdapter;
 
     @BindView(R.id.songDetailViewPager)
     ViewPager viewPager;
+
+    private boolean isInitiated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
         // final String[] regionNames = getResources().getStringArray(R.array.regionNames);
         // this.viewPager = (ViewPager) findViewById(R.id.songDetailViewPager);
 
+        isInitiated = false;
+
         if (savedInstanceState == null) {
             id = getIntent().getIntExtra(Provider.Song._ID, 0);
         } else {
@@ -57,14 +61,19 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
         FragmentManager fm = getSupportFragmentManager();
 
         cursorFragmentStatePagerAdapter = new CursorFragmentStatePagerAdapter(fm) {
+            // TODO: THIS IS NOT SYHCNRONIZED WITH THE ACTUAL VIEWED ITEM
             @Override
             public Fragment getItem(int position, Cursor cursor) {
                 String lyrics = "";
                 if (cursor != null) {
+
                     cursor.moveToPosition(position);
 
                     int idColumnId = cursor.getColumnIndex(Provider.Song._ID);
+
                     id = cursor.getInt(idColumnId);
+
+                    Log.d("SongDetailBrowserAct", String.valueOf(id));
 
                     final int lyricsColumnId = cursor.getColumnIndex(Provider.Song.COLUMN_NAMES.lyrics.name());
                     lyrics = cursor.getString(lyricsColumnId);
@@ -101,7 +110,7 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        if (id != null) {
+        if (!isInitiated) {
             // move cursor to id position
             data.moveToFirst();
             while (data.moveToNext()) {
@@ -109,7 +118,6 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
                 Integer id = data.getInt(idColumnId);
 
                 if (this.id.equals(id)) {
-                    this.id = null;
 
                     int position = data.getPosition();
                     cursorFragmentStatePagerAdapter.swapCursor(data);
@@ -117,6 +125,7 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
                     // woodcutter style
                     cursorFragmentStatePagerAdapter.getCursor().moveToPosition(position);
                     viewPager.setCurrentItem(data.getPosition(), true);
+                    isInitiated = true;
                     break;
                 }
             }
@@ -140,8 +149,14 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
     }
 
     public void onFabClick(View view) {
-        Intent intent = new Intent(view.getContext(), SongDetailActivity.class);
+        final Cursor cursor = cursorFragmentStatePagerAdapter.getCursor();
+        int position = viewPager.getCurrentItem();
+        cursor.moveToPosition(position);
 
+        final int idColumnId = cursor.getColumnIndex(Provider.Song._ID);
+        Integer id = cursor.getInt(idColumnId);
+
+        Intent intent = new Intent(view.getContext(), SongDetailActivity.class);
         intent.putExtra(Provider.Song._ID, id.intValue());
         startActivity(intent);
     }

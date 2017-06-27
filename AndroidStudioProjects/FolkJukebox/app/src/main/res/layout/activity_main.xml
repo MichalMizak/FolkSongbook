@@ -14,15 +14,19 @@
         android:layout_height="match_parent"
         tools:context="sk.upjs.ics.folkjukebox.GUI.SongListActivity">
 
-        <android.support.v7.widget.RecyclerView
+        <sk.upjs.ics.folkjukebox.GUI.recycler.view.FastScroll.FastScrollRecyclerView
             android:id="@+id/songRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            >
+            <!--
             android:longClickable="true"
-            android:scrollbars="vertical">
-            <!--app:layoutManager="android.support.v7.widget.LinearLayoutManager"-->
+            android:fadeScrollbars="true"
+            android:keepScreenOn="true"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"-->
 
-        </android.support.v7.widget.RecyclerView>
+        </sk.upjs.ics.folkjukebox.GUI.recycler.view.FastScroll.FastScrollRecyclerView>
 
 
     </RelativeLayout>

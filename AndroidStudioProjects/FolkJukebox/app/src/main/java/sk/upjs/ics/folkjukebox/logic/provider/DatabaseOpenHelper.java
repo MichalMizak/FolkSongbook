@@ -25,7 +25,6 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("DatabaseOpenHelper", "I got here");
 
     }
 

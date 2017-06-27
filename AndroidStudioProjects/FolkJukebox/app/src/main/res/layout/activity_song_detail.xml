@@ -13,7 +13,7 @@
         android:padding="20dp">
 
         <TextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/titleTextViewList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title"
@@ -23,7 +23,7 @@
             android:id="@+id/titleTextViewValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/titleTextView"
+            android:layout_below="@id/titleTextViewList"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:gravity="end"
             android:textAlignment="textEnd"/>

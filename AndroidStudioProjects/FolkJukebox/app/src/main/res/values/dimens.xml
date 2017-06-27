@@ -10,4 +10,6 @@
     <dimen name="standard_55">55dp</dimen>
     <dimen name="standard_100">100dp</dimen>
     <dimen name="standard_145">145dp</dimen>
+
+    <dimen name="fast_scroll_overlay_text_size">100dp</dimen>
 </resources>

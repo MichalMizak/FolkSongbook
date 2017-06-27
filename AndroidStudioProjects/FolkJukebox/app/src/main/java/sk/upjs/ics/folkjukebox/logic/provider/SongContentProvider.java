@@ -76,6 +76,7 @@ public class SongContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
+
         Cursor cursor;
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();

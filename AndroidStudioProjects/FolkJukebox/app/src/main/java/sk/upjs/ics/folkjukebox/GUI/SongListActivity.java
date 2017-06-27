@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,8 +18,13 @@ import android.widget.LinearLayout;
 
 import com.facebook.stetho.Stetho;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import sk.upjs.ics.folkjukebox.GUI.recycler.view.FastScroll.FastScrollRecyclerView;
+import sk.upjs.ics.folkjukebox.GUI.recycler.view.FastScroll.FastScrollRecyclerViewItemDecoration;
 import sk.upjs.ics.folkjukebox.GUI.recycler.view.SimpleCursorRecyclerAdapter;
 import sk.upjs.ics.folkjukebox.GUI.recycler.view.SongItemTouchHelper;
 import sk.upjs.ics.folkjukebox.R;
@@ -33,9 +39,10 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
     View fabBGLayout;
     boolean isFABOpen = false;
 
+    Cursor cursor;
 
     @BindView(R.id.songRecyclerView)
-    RecyclerView songRecyclerView;
+    FastScrollRecyclerView songRecyclerView;
 
     private LinearLayoutManager linearLayoutManager;
     private SimpleCursorRecyclerAdapter adapter;
@@ -50,14 +57,29 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
         Stetho.initializeWithDefaults(this);
         ButterKnife.bind(this);
 
-        linearLayoutManager = new LinearLayoutManager(this);
-        songRecyclerView.setLayoutManager(linearLayoutManager);
-
         getLoaderManager().initLoader(0, null, this);
 
+        linearLayoutManager = new LinearLayoutManager(this);
+        initRecyclerView();
+
+        initFabs();
+
+        handleOnClickListeners();
+
+        new SongItemTouchHelper(songRecyclerView,
+                new SongItemTouchHelper.SongCallback(adapter));
+    }
+
+    private void initRecyclerView() {
+        songRecyclerView.setLayoutManager(linearLayoutManager);
         songRecyclerView.setAdapter(initializeAdapter());
 
+        FastScrollRecyclerViewItemDecoration decoration = new FastScrollRecyclerViewItemDecoration(this);
+        songRecyclerView.addItemDecoration(decoration);
+        songRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
 
+    private void initFabs() {
         fabLayout1 = (LinearLayout) findViewById(R.id.fabLayout1);
         fabLayout2 = (LinearLayout) findViewById(R.id.fabLayout2);
         fabLayout3 = (LinearLayout) findViewById(R.id.fabLayout3);
@@ -66,12 +88,8 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
         lyricsFab = (FloatingActionButton) findViewById(R.id.lyricsFab);
         titleFab = (FloatingActionButton) findViewById(R.id.titleFab);
         fabBGLayout = findViewById(R.id.fabBGLayout);
-
-        handleOnClickListeners();
-
-        new SongItemTouchHelper(songRecyclerView,
-                new SongItemTouchHelper.SongCallback(adapter));
     }
+
 
     private void handleOnClickListeners() {
         fab.setOnClickListener(new View.OnClickListener() {
@@ -215,15 +233,11 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
 
 
     private SimpleCursorRecyclerAdapter initializeAdapter() {
-        String[] from = {Provider.Song.COLUMN_NAMES.title.name(),
-                Provider.Song.COLUMN_NAMES.lyrics.name(),
-                Provider.Song.COLUMN_NAMES.region.name(),
-                Provider.Song.COLUMN_NAMES.source.name(),
-                Provider.Song.COLUMN_NAMES.styleId.name()};
+        cursor = getContentResolver().query(Provider.SONG_CONTENT_URI, Defaults.ALL_COLUMNS, Defaults.NO_SELECTION,
+                Defaults.NO_SELECTION_ARGS, "title ASC");
 
-        int[] to = {android.R.id.text1};
-
-        adapter = new SimpleCursorRecyclerAdapter(this, Defaults.NO_CURSOR, 0);
+        adapter = new SimpleCursorRecyclerAdapter(this, cursor, 0);
+        adapter.setMapIndex(buildMapIndex(cursor));
 
         setOnItemClickListener(adapter);
 
@@ -242,6 +256,9 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // adapter.setMapIndex(buildMapIndex(data));
+        cursor = data;
+        //songRecyclerView.setupThings();
         adapter.swapCursor(data);
     }
 
@@ -250,26 +267,22 @@ public class SongListActivity extends AppCompatActivity implements LoaderManager
         adapter.swapCursor(Defaults.NO_CURSOR);
     }
 
-    public void onSearchFabClick(View view) {
-        onSearchRequested();
-    }
 
+    // TODO: work with database rather than iterate whole cursor
+    private HashMap<String, Integer> buildMapIndex(Cursor cursor) {
+        HashMap<String, Integer> mapIndex = new HashMap<>();
 
-    /*
-    private int getLastVisibleItemPosition() {
-        return linearLayoutManager.findLastVisibleItemPosition();
-    }
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(cursor.getColumnIndex(Provider.Song.COLUMN_NAMES.title.name()));
+            String index = name.substring(0, 1);
+            index = index.toUpperCase();
 
-    private void setRecyclerViewScrollListener() {
-        songRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                int totalItemCount = songRecyclerView.getLayoutManager().getItemCount();
-                if (totalItemCount == getLastVisibleItemPosition() + 1) {
-                    requestPhoto();
-                }
+            if (!mapIndex.containsKey(index)) {
+                mapIndex.put(index, cursor.getPosition());
             }
-        });
-    }*/
+        }
+
+        return mapIndex;
+    }
+
 }

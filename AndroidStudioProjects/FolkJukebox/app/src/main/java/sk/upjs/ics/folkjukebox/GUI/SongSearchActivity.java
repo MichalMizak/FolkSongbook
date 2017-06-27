@@ -11,13 +11,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -25,9 +19,8 @@ import android.widget.ListView;
 
 import com.facebook.stetho.Stetho;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import sk.upjs.ics.folkjukebox.GUI.recycler.view.SimpleCursorRecyclerAdapter;
+import sk.upjs.ics.folkjukebox.GUI.list.view.TitleLyricsCursorAdapter;
 import sk.upjs.ics.folkjukebox.R;
 import sk.upjs.ics.folkjukebox.logic.provider.Provider;
 import sk.upjs.ics.folkjukebox.logic.provider.SongSearchRecentSuggestionsProvider;
@@ -49,7 +42,7 @@ public class SongSearchActivity extends ListActivity implements LoaderManager.Lo
     View fabBGLayout;
     boolean isFABOpen = false;
 
-    private SimpleCursorAdapter adapter;
+    private TitleLyricsCursorAdapter adapter;
     private String query;
     private int loaderId;
 
@@ -190,7 +183,7 @@ public class SongSearchActivity extends ListActivity implements LoaderManager.Lo
     public boolean onSearchRequested() {
         if (isFABOpen)
             closeFABMenu();
-        
+
         Bundle appData = new Bundle();
         appData.putInt(SongSearchActivity.SEARCH_MODE, this.searchMode);
         startSearch(null, false, appData, false);
@@ -228,6 +221,10 @@ public class SongSearchActivity extends ListActivity implements LoaderManager.Lo
         loaderId++;
         getLoaderManager().initLoader(loaderId, null, this);
 
+        saveQuery();
+    }
+
+    private void saveQuery() {
         SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                 SongSearchRecentSuggestionsProvider.AUTHORITY, SongSearchRecentSuggestionsProvider.MODE);
         suggestions.saveRecentQuery(query, null);
@@ -291,19 +288,19 @@ public class SongSearchActivity extends ListActivity implements LoaderManager.Lo
         startActivity(intent);
     }
 
-    private SimpleCursorAdapter initializeAdapter() {
+    private TitleLyricsCursorAdapter initializeAdapter() {
 
         String[] from = {Provider.Song.COLUMN_NAMES.title.name(),
-                Provider.Song.COLUMN_NAMES.lyrics.name(),
-                Provider.Song.COLUMN_NAMES.region.name(),
-                Provider.Song.COLUMN_NAMES.source.name(),
-                Provider.Song.COLUMN_NAMES.styleId.name()};
+                Provider.Song.COLUMN_NAMES.lyrics.name()};
 
-        int[] to = {android.R.id.text1};
+        // int[] to = {android.R.id.text1, android.R.id.text2};
+        // android.R.layout.simple_list_item_1
 
-        adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1,
-                Defaults.NO_CURSOR, from, to, Defaults.NO_FLAGS);
+        // int[] to = {R.id.titleTextViewList, R.id.lyricsPreviewTextViewList};
 
+        //adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,
+          //      Defaults.NO_CURSOR, from, to, Defaults.NO_FLAGS);
+        adapter = new TitleLyricsCursorAdapter(this, Defaults.NO_CURSOR, Defaults.NO_FLAGS);
         // setOnItemClickListener(adapter);
 
         return adapter;
