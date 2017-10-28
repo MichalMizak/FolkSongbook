@@ -214,12 +214,11 @@ public class SongSearchActivity extends ListActivity implements LoaderManager.Lo
     }
 
     private void doMySearch() {
-        Log.d("doMySearch", getLoaderManager().toString());
-
         // TODO: improve this solution by properly resetting loader
         getLoaderManager().destroyLoader(loaderId);
         loaderId++;
         getLoaderManager().initLoader(loaderId, null, this);
+
 
         saveQuery();
     }

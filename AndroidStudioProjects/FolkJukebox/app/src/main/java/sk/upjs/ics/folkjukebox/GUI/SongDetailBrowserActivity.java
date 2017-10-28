@@ -61,7 +61,7 @@ public class SongDetailBrowserActivity extends AppCompatActivity implements Load
         FragmentManager fm = getSupportFragmentManager();
 
         cursorFragmentStatePagerAdapter = new CursorFragmentStatePagerAdapter(fm) {
-            // TODO: THIS IS NOT SYHCNRONIZED WITH THE ACTUAL VIEWED ITEM
+            // NOTE: THIS IS NOT SYHCNRONIZED WITH THE ACTUAL VIEWED ITEM
             @Override
             public Fragment getItem(int position, Cursor cursor) {
                 String lyrics = "";
